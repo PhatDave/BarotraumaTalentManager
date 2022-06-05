@@ -1,13 +1,11 @@
 import xml.etree.ElementTree as ET
 
 from TalentManager.Character import Character
+from Constants import ABSOLUTE_ROOT
 
 
 class TalentManager:
     def __init__(self):
-        from main import ABSOLUTE_ROOT
-        global ABSOLUTE_ROOT
-
         self.talents = 'TalentTrees.xml'
         self.characters = []
 
@@ -20,6 +18,8 @@ class TalentManager:
                 char = Character(character)
                 char.parse(talentTree)
                 self.characters.append(char)
+        for character in self.characters:
+            character.loadTalentDetails()
 
     def __str__(self):
         output = "TalentManager:\n"

@@ -15,6 +15,10 @@ class TalentTree:
                 talentObj = Talent(talentName, talentLevel)
                 self.talents.append(talentObj)
 
+    def parseTalentDetails(self, tree):
+        for talent in self.talents:
+            talent.parseDetails(tree)
+
     def __str__(self):
         output = f'{self.name}:\n'
         for talent in self.talents:

@@ -1,7 +1,5 @@
-from TalentManager import TalentManager
+from TalentManager.TalentManager import TalentManager
 
-ABSOLUTE_ROOT = r'D:\Steam\steamapps\common\Barotrauma\Content\Talents'
-
-talentManager = TalentManager.TalentManager()
+talentManager = TalentManager()
 talentManager.loadAll()
 print(str(talentManager))
