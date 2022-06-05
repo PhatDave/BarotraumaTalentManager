@@ -4,4 +4,4 @@ class Talent:
         self.level = level
 
     def __str__(self):
-        return "\t{} {}".format(self.name, self.level)
+        return f'\t{self.name} {self.level}'
