@@ -53,6 +53,12 @@ class Character:
                 break
         return talent
 
+    def removeTalent(self, talent):
+        self.fileTree.getroot().remove(talent)
+
+    def addTalent(self, talent):
+        self.fileTree.getroot().append(talent)
+
     def __str__(self):
         output = f'{self.characterSubstitutionTable[self.name]} ({self.getCount()}):\n'
         for tree in self.talentTrees:
