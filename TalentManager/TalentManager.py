@@ -20,9 +20,16 @@ class TalentManager:
                 self.characters.append(char)
         for character in self.characters:
             character.loadTalentDetails()
+            character.verifyTalents()
+
+    def getCount(self):
+        count = 0
+        for character in self.characters:
+            count += character.getCount()
+        return count
 
     def __str__(self):
-        output = "TalentManager:\n"
+        output = f"TalentManager ({self.getCount()}):\n"
         for character in self.characters:
             output += f"\t{str(character)}\n"
         return output

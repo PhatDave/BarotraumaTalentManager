@@ -34,8 +34,18 @@ class Character:
         for tree in self.talentTrees:
             tree.parseTalentDetails(root)
 
+    def verifyTalents(self):
+        for tree in self.talentTrees:
+            tree.verifyTalents()
+
+    def getCount(self):
+        count = 0
+        for tree in self.talentTrees:
+            count += tree.getCount()
+        return count
+
     def __str__(self):
-        output = f'{self.characterSubstitutionTable[self.name]}:\n'
+        output = f'{self.characterSubstitutionTable[self.name]} ({self.getCount()}):\n'
         for tree in self.talentTrees:
             output += f'\t{str(tree)}\n'
         return output
