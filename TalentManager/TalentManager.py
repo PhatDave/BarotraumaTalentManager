@@ -7,29 +7,37 @@ from Constants import ABSOLUTE_ROOT
 class TalentManager:
     def __init__(self):
         self.talents = 'TalentTrees.xml'
-        self.characters = []
+        self.talentsTree = None
+        self.characters = {}
 
     def loadAll(self):
-        tree = ET.parse(f'{ABSOLUTE_ROOT}\\{self.talents}')
-        root = tree.getroot()
+        self.talentsTree = ET.parse(f'{ABSOLUTE_ROOT}\\{self.talents}')
+        root = self.talentsTree.getroot()
         for talentTree in root:
             character = talentTree.attrib['jobidentifier']
-            if character not in self.characters:
+            if character not in self.characters.keys():
                 char = Character(character)
                 char.parse(talentTree)
-                self.characters.append(char)
-        for character in self.characters:
+                self.characters[character] = char
+        for character in self.characters.values():
             character.loadTalentDetails()
             character.verifyTalents()
 
     def getCount(self):
         count = 0
-        for character in self.characters:
+        for character in self.characters.values():
             count += character.getCount()
         return count
 
+    def getTalentByName(self, name):
+        talent = None
+        for character in self.characters.values():
+            talent = character.getTalentByName(name)
+            if talent is not None:
+                break
+        return talent
     def __str__(self):
         output = f"TalentManager ({self.getCount()}):\n"
-        for character in self.characters:
+        for character in self.characters.values():
             output += f"\t{str(character)}\n"
         return output

@@ -27,6 +27,14 @@ class TalentTree:
         count = len(self.talents)
         return count
 
+    def getTalentByName(self, name):
+        talent = None
+        for talentIt in self.talents:
+            if talentIt.name == name:
+                talent = talentIt
+                break
+        return talent
+
     def __str__(self):
         output = f'{self.name} ({self.getCount()}):\n'
         for talent in self.talents:

@@ -19,6 +19,7 @@ class Character:
 
         alternateName = self.characterSubstitutionTable[self.name]
         self.fileName = f'{ABSOLUTE_ROOT}\\{alternateName}\\Talents{alternateName}.xml'
+        self.fileTree = None
         self.talentTrees = []
 
     def parse(self, tree):
@@ -29,10 +30,10 @@ class Character:
             self.talentTrees.append(ttree)
 
     def loadTalentDetails(self):
-        tree = ET.parse(self.fileName)
-        root = tree.getroot()
-        for tree in self.talentTrees:
-            tree.parseTalentDetails(root)
+        self.fileTree = ET.parse(self.fileName)
+        root = self.fileTree.getroot()
+        for talentTree in self.talentTrees:
+            talentTree.parseTalentDetails(root)
 
     def verifyTalents(self):
         for tree in self.talentTrees:
@@ -43,6 +44,14 @@ class Character:
         for tree in self.talentTrees:
             count += tree.getCount()
         return count
+
+    def getTalentByName(self, name):
+        talent = None
+        for tree in self.talentTrees:
+            talent = tree.getTalentByName(name)
+            if talent is not None:
+                break
+        return talent
 
     def __str__(self):
         output = f'{self.characterSubstitutionTable[self.name]} ({self.getCount()}):\n'
