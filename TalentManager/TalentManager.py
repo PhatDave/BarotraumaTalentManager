@@ -43,10 +43,12 @@ class TalentManager:
 
         sourceCharacter, sourceTree, sourceRow, sourceTalent = self.find(f'{sourceCharacter}:{sourceTree}:{sourceLevel}:{sourceTalent}')
         destinationCharacter, destinationTree, destinationRow, _ = self.find(f'{destinationCharacter}:{destinationTree}:{destinationLevel}:*')
-        print(f"Source: {sourceCharacter}'s {sourceTree} tree, level {sourceLevel}, talent {sourceTalent}")
+        print(f"Source: {sourceCharacter.attrib}'s {sourceTree.attrib} tree, row {sourceRow.tag}, talent {sourceTalent.attrib}")
 
-        destinationRow.append(sourceTalent)
-        sourceRow.remove(sourceTalent)
+        # destinationRow.append(sourceTalent)
+        for talent in sourceRow:
+            print(talent.attrib)
+        # sourceRow.remove(sourceTalent)
 
         # self.characters[sourceCharacter].removeTalent(talent)
         # self.characters[destinationCharacter].addTalent(talent)
@@ -74,15 +76,13 @@ class TalentManager:
                     tree = talentTree
                 rowNo = 1
                 for talentRow in talentTree:
-                    if rowNo == lfRow:
+                    if rowNo == lfRow and talentTree.attrib['identifier'] == lfTree:
                         row = talentRow
-                    rowNo += 1
                     for talentIt in talentRow:
                         if talentIt.attrib['identifier'] == lfTalent:
                             talent = talentIt
-
+                    rowNo += 1
         return character, tree, row, talent
-
 
     def save(self):
         with open(f'{ABSOLUTE_ROOT}\\{self.talents}', 'wb') as f:
