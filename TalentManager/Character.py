@@ -54,10 +54,16 @@ class Character:
         return talent
 
     def removeTalent(self, talent):
-        self.fileTree.getroot().remove(talent)
+        root = self.fileTree.getroot()
+        element = root.find(f'Talent[@identifier="{talent.element.attrib["identifier"]}"]')
+        root.remove(element)
 
     def addTalent(self, talent):
-        self.fileTree.getroot().append(talent)
+        self.fileTree.getroot().append(talent.element)
+
+    def save(self):
+        with open(self.fileName, 'wb') as f:
+            self.fileTree.write(f)
 
     def __str__(self):
         output = f'{self.characterSubstitutionTable[self.name]} ({self.getCount()}):\n'

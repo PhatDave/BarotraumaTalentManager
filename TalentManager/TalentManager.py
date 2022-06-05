@@ -38,21 +38,22 @@ class TalentManager:
         return talent
 
     def move(self, input):
-        sourceCharacter, sourceTree, sourceLevel, sourceTalent, destinationCharacter, destinationTree, destinationLevel = self.parseInput(input)
-        print(f"Moving {sourceTalent} from {sourceCharacter}'s {sourceTree} tree to {destinationCharacter}'s {destinationTree} tree")
+        sourceCharacter, sourceTree, sourceLevel, sourceTalentName, destinationCharacter, destinationTree, destinationLevel = self.parseInput(input)
+        print(f"Moving {sourceTalentName} from {sourceCharacter}'s {sourceTree} tree to {destinationCharacter}'s {destinationTree} tree")
 
-        sourceCharacter, sourceTree, sourceRow, sourceTalent = self.find(f'{sourceCharacter}:{sourceTree}:{sourceLevel}:{sourceTalent}')
-        destinationCharacter, destinationTree, destinationRow, _ = self.find(f'{destinationCharacter}:{destinationTree}:{destinationLevel}:*')
-        print(f"Source: {sourceCharacter.attrib}'s {sourceTree.attrib} tree, row {sourceRow.tag}, talent {sourceTalent.attrib}")
+        _, _, sourceRow, sourceTalent = self.find(f'{sourceCharacter}:{sourceTree}:{sourceLevel}:{sourceTalentName}')
+        _, _, destinationRow, _ = self.find(f'{destinationCharacter}:{destinationTree}:{destinationLevel}:*')
 
-        # destinationRow.append(sourceTalent)
-        for talent in sourceRow:
-            print(talent.attrib)
-        # sourceRow.remove(sourceTalent)
+        destinationRow.append(sourceTalent)
+        sourceRow.remove(sourceTalent)
 
-        # self.characters[sourceCharacter].removeTalent(talent)
-        # self.characters[destinationCharacter].addTalent(talent)
+        longFileTalent = self.characters[sourceCharacter].getTalentByName(sourceTalentName)
+        self.characters[sourceCharacter].removeTalent(longFileTalent)
+        self.characters[destinationCharacter].addTalent(longFileTalent)
 
+        # TODO make all this saving a transaction?
+        self.characters[sourceCharacter].save()
+        self.characters[destinationCharacter].save()
         self.save()
 
     def parseInput(self, input):
