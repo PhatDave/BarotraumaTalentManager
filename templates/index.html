@@ -1,0 +1,318 @@
+{% load static %}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js"
+	        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+	        integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+	        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    {% block title %}
+    <title>Barotrauma Talents Index</title>
+    {% endblock %}
+	<style>
+        html, body {
+            height: 100vh;
+            max-width: 100vw;
+            overflow: hidden;
+            background-color: #000;
+            background-image: linear-gradient(to bottom, #F0F2F0, #000C40);
+        }
+
+        /* .imageWrapper {
+            border-radius: 2rem;
+            background: rgba(40, 37, 113, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        } */
+
+        .talentTree {
+            background: rgba(40, 37, 113, 0.3);
+            border-radius: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(40, 37, 113, 0.1);
+            text-shadow: 0 0 6px darkblue;
+            color: #000;
+        }
+
+        .characterTreesContainer .display-5 {
+            text-shadow: 0 0 15px #000;
+            color: #fff;
+        }
+
+        .characterContainer {
+            background: rgba(40, 37, 113, 0.3);
+            border-radius: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(40, 37, 113, 0.1);
+            text-shadow: 0 0 6px darkblue;
+            color: #000;
+        }
+
+        .rowCharContainer {
+            height: 100vh;
+            scroll-snap-align: start;
+        }
+
+        .flex-even {
+            flex: 1;
+        }
+
+        .talentRowContainer {
+            min-height: 98px;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 2rem;
+        }
+
+        #content {
+            overflow-y: auto;
+            height: 100vh;
+            scroll-snap-type: y mandatory;
+            scroll-snap-points-y: repeat(100%);
+            scroll-snap-destination: 0 0;
+        }
+        .navbar {
+            max-height: 5vh;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+        }
+        .navbar:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .nav-item {
+            transition: all 0.5s ease;
+        }
+        .nav-item:hover {
+            transform: scale(1.2);
+        }
+	</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark k w-50 mx-auto">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0" id="navbarUl">
+            </ul>
+          </div>
+        </div>
+      </nav>
+<div class="container-fluid" id="content">
+</div>
+<script>
+    $(document).ready(function () {
+
+        let iconSize = 64;
+        let inputField = $("#fileInputTextjel");
+        var dictOfClasses = {}, i = 1;
+
+        inputField.keypress(function (key) {
+            if (key.which === 13) {
+                submitPath(inputField.val());
+            }
+        })
+
+        submitPath("D:\\Steam\\steamapps\\common\\Barotrauma");
+
+        {# D:\Steam\steamapps\common\Barotrauma #}
+
+        function submitPath(path) {
+            $.ajax({
+                url: "{% url 'talenter:getTalents' %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    "path": path
+                },
+                success: function (data) {
+                    let content = $("#content")
+                    inputField.remove();
+                    let uiManager = new UIManager(data);
+                    uiManager.build(content);
+                }
+            });
+        }
+
+        function capitalizeFirstLetter(string){
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        document.addEventListener("keypress", function(e) {
+            for (const [key, value] of Object.entries(dictOfClasses)) {
+                if (e.key == key) window.location = "#" + value;
+            }
+        });
+
+        class UIManager {
+            constructor(data) {
+                // If data is a string then do nothing
+				if (typeof data === "string") {
+					this.data = JSON.parse(data);
+				} else {
+					this.data = data;
+				}
+            }
+
+
+            build(container) {
+                $.each(this.data, (key) => {
+                    let character = this.data[key];
+                    let characterString = character.name
+                    dictOfClasses[i] = characterString;
+                    i++;
+
+                    $("#navbarUl").append("<li class='nav-item'><a class='nav-link' href='#" + characterString + "''>" + capitalizeFirstLetter(characterString) + "</a></li>");
+
+                    const characterContainer = this.createCharacterContainer(character, characterString);
+                    const talentTreeContainer = this.createTalentTreeContainer();
+                    characterContainer.append(talentTreeContainer);
+
+                    $.each(character.trees, (treeKey) => {
+                        let tree = character.trees[treeKey];
+                        let treeString = characterString + "_" + tree.name
+                        const talentTree = this.createTalentTree(tree, treeString);
+                        let talentRowContainer;
+
+                        let level = 0;
+                        $.each(tree.talents, (i) => {
+                            let talent = tree.talents[i];
+                            if (talent.level !== level) {
+                                if (level > 0) {
+                                    talentTree.append(talentRowContainer);
+                                }
+                                level = talent.level;
+                                let rowString = treeString + "_" + level
+                                talentRowContainer = this.createTalentTreeRowContainer(rowString);
+                            }
+                            let talentString = treeString + "_" + level + "_" + talent.name;
+                            let talentElement = this.createTalent(talent, talentString);
+                            talentRowContainer.append(talentElement);
+                        })
+                        talentTree.append(talentRowContainer);
+
+                        talentTreeContainer.append(talentTree);
+                    });
+                    container.append(characterContainer);
+                });
+                $(".talent").tooltip();
+                $(".talent").draggable();
+				$('.talentRowContainer').droppable({
+					drop: function(ev, ui) {
+						$(ui.draggable).detach().css({top: 0,left: 0}).appendTo(this);
+
+                        let movedElement = ui.draggable;
+				        let dropzone = $(this);
+
+				        let destination = dropzone.attr('id');
+                        let source = movedElement.attr('id');
+
+                        let moveCommand = `${source}->${destination}`;
+                        // Todo: ship this command to backend
+						console.log(moveCommand);
+
+                        let row = movedElement.parent();
+                        // These are not necessary yet
+                        // let tree = row.parent();
+                        // let character = tree.parent().parent();
+
+                        let talentName = movedElement.attr('id').split('_')[3];
+                        let newId = row.attr('id') + '_' + talentName;
+						movedElement.attr('id', newId);
+
+                        $.ajax({
+							url: '{% url 'talenter:move' %}',
+							type: 'POST',
+							data: {
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+								moveCommand: moveCommand
+							},
+							success: function(data) {
+								console.log(data);
+							}
+						});
+                    }
+				});
+            }
+
+            createCharacterContainer(character, characterString) {
+                let element = `<div class="row justify-content-between align-items-center rowCharContainer">
+                <div id="${characterString}" class="characterContainer col-6 mt-5 mx-auto px-1 py-3">
+					<h2 class="display-1 characterName text-center">${character.name.toUpperCase()}</h2>
+				</div></div>`;
+
+                return $(element);
+            }
+
+            createTalentTreeContainer() {
+                let element = `<div class="characterTreesContainer d-flex flex-row justify-content-between">
+					</div>`;
+                return $(element);
+            }
+
+            createTalentTree(ttree, ttreeString) {
+                let element = `<div id="${ttreeString}" class="talentTree mx-2 d-flex flex-column justify-content-start px-1 flex-even">
+						<div class="talentTreeName text-center">
+							<h3 class="display-5 p-3">${ttree.name.toUpperCase()}</h3>
+                            <hr class="w-75 text-white-50 mx-auto">
+						</div>
+					</div>`;
+                return $(element);
+            }
+
+            createTalentTreeRowContainer(rowString) {
+                let element = `<div id="${rowString}" class="talentRowContainer my-1 d-flex flex-row justify-content-evenly">
+					</div>`;
+                return $(element);
+            }
+
+            createTalent(talent, talentString) {
+                let element = `<div id="${talentString}" class="talent flex-even text-center m-2">
+                    <div class="imageWrapper p-2">
+							<img src="static/images/${talent.name}.png" width="${iconSize}" height="${iconSize}" title="${talent.localizedName}\n\n${talent.description}">                        
+						</div>                        
+                    </div>`
+                return $(element);
+            }
+
+            addTooltipsToAllTalents() {
+                {# This trash doesn't really work at all #}
+                const talents = this.getAllTalents();
+                $.each(talents, (key) => {
+                    const talent = talents[key];
+                    const talentElement = $(`#${talent.name}`)[0];
+
+                    tippy(talentElement, {
+                        content: `<h4><b>${talent.localizedName}</b></h4><p>${talent.description}</p>`,
+                        allowHTML: true,
+                        followCursor: true,
+                    });
+                })
+            }
+
+            getAllTalents() {
+                let talents = [];
+                $.each(this.data, (key) => {
+                    const character = this.data[key];
+                    $.each(character.trees, (key2) => {
+                        const tree = character.trees[key2];
+                        $.each(tree.talents, (key3) => {
+                            const talent = tree.talents[key3];
+                            talents.push(talent);
+                        })
+                    })
+                })
+                return talents;
+            }
+        }
+    })
+</script>
+</body>
