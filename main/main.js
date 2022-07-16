@@ -1,6 +1,10 @@
 const {app, BrowserWindow} = require('electron');
 const path = require("path");
 
+const webPath = './web';
+const templatesPath = path.join(webPath, 'templates');
+const scriptPath = path.join(webPath, 'scripts');
+
 function createWindow() {
 	const win = new BrowserWindow({
 		width: 1600,
@@ -9,7 +13,7 @@ function createWindow() {
 			preload: path.join(__dirname, 'preload.js')
 		}
 	})
-	win.loadFile('templates/index.html')
+	win.loadFile(path.join(templatesPath, 'index.html'))
 }
 
 app.whenReady().then(() => {
