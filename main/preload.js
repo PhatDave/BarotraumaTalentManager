@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function() {
 	function replaceText(selector, text) {
 		const element = document.getElementById(selector)
 		if (element) {
