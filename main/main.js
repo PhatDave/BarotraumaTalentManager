@@ -10,16 +10,34 @@ const mainMenuTemplate = [
 		label: 'File',
 		submenu: [
 			{
-				label: 'Test pogram',
+				label: 'Pogramn\'t',
 				accelerator: 'Ctrl+Q',
 				click: function() {
 					app.quit()
 				}
+			},
+			{
+				label: 'Pogram',
+				// Looks like you cannot override some default hotkeys
+				accelerator: 'Ctrl+A',
+				click: createNewWindow
 			}
 		]
 	}
 ]
 
+function createNewWindow() {
+	let newWindow = new BrowserWindow({
+		width: 800,
+		height: 400,
+		webPreferences: {
+			// preload: path.join(__dirname, 'preload.js'),
+			nodeIntegration: true
+		}
+	})
+
+	newWindow.loadFile(path.join(templatesPath, 'newPogram.html'));
+}
 
 app.whenReady().then(() => {
 	mainWindow = new BrowserWindow({
