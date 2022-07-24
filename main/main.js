@@ -26,6 +26,35 @@ const mainMenuTemplate = [
 	}
 ]
 
+if (process.env.NODE_ENV !== 'production') {
+	mainMenuTemplate.push({
+		label: 'Developer',
+		submenu: [
+			{
+				label: 'Reload',
+				accelerator: 'Ctrl+R',
+				click: function(item, focusedWindow) {
+					focusedWindow.reload();
+				}
+			},
+			{
+				label: 'Force Reload',
+				accelerator: 'Ctrl+Shift+R',
+				click: function(item, focusedWindow) {
+					focusedWindow.webContents.reloadIgnoringCache();
+				}
+			},
+			{
+				label: 'Toggle',
+				accelerator: 'Ctrl+Shift+I',
+				click: function(item, focusedWindow) {
+					focusedWindow.toggleDevTools();
+				}
+			}
+		]
+	});
+}
+
 function createNewWindow() {
 	let newWindow = new BrowserWindow({
 		width: 800,
