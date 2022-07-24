@@ -1,12 +1,15 @@
+const path = require("path");
 window.addEventListener('DOMContentLoaded', function() {
-	function replaceText(selector, text) {
-		const element = document.getElementById(selector)
-		if (element) {
-			element.innerText = text
-		}
-	}
+	const head = document.querySelector('head');
 
-	// for (const dependency of ['chrome', 'node', 'electron']) {
-	// 	replaceText(`${dependency}-version`, process.versions[dependency])
-	// }
+	const bootstrapCss = document.createElement('link');
+	bootstrapCss.rel = 'stylesheet';
+	bootstrapCss.href = path.join(process.cwd(), 'node_modules/bootstrap/dist/css/bootstrap.css');
+	const bootstrapJs = document.createElement('script');
+	bootstrapJs.src = path.join(process.cwd(), 'node_modules/bootstrap/dist/js/bootstrap.js');
+	const jqueryJs = document.createElement('script');
+	jqueryJs.src = path.join(process.cwd(), 'node_modules/jquery/dist/jquery.js');
+
+	head.appendChild(bootstrapCss);
+	head.appendChild(bootstrapJs);
 })
