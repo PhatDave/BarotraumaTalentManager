@@ -1,4 +1,8 @@
-const {app, BrowserWindow, Menu} = require('electron');
+const {
+	app,
+	BrowserWindow,
+	Menu
+} = require('electron');
 const path = require("path");
 
 const webPath = './web';
@@ -18,8 +22,7 @@ const mainMenuTemplate = [
 			},
 			{
 				label: 'Pogram',
-				// Looks like you cannot override some default hotkeys
-				accelerator: 'Ctrl+A',
+				accelerator: 'Ctrl+A', // Looks like you cannot override some default hotkeys
 				click: createNewWindow
 			}
 		]
