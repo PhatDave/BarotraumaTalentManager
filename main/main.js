@@ -37,6 +37,9 @@ function createNewWindow() {
 	})
 
 	newWindow.loadFile(path.join(templatesPath, 'newPogram.html'));
+	newWindow.on('close', function() {
+		newWindow = null;
+	});
 }
 
 app.whenReady().then(() => {
@@ -49,6 +52,9 @@ app.whenReady().then(() => {
 		}
 	})
 
+	mainWindow.on('closed', () => {
+		app.quit();
+	});
 	Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate))
 	mainWindow.loadFile(path.join(templatesPath, 'index.html'))
 })
