@@ -99,5 +99,12 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('new-program', (event, arg) => {
 	console.log(arg);
-	createNewWindow();
+	mainWindow.webContents.send('version', {
+		node: process.versions.node,
+		electron: process.versions.electron,
+		chrome: process.versions.chrome,
+		pogs: "Pogs: true"
+	});
+	// console.log(event.sender.id);
+	// Still don't know how to close the window though, would have to use a static reference which I dislike
 });

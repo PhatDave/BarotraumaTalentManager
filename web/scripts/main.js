@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-	document.querySelector('h1').innerText = 'Hi, mom!'
-	// parser = new DOMParser();
-	// xmlDoc = parser.parseFromString(text,"text/xml");
+	const electron = require('electron');
+	const ipcRenderer = electron.ipcRenderer;
+
+	ipcRenderer.on('version', (event, version) => {
+		console.log(version);
+		document.querySelector('#node-version').innerText = version.node;
+		document.querySelector('#chrome-version').innerText = version.chrome;
+		document.querySelector('#electron-version').innerText = version.electron;
+		document.querySelector('#pogs').innerText = version.pogs;
+	});
 });
