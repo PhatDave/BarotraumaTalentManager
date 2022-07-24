@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Pogram of the new variety</title>
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<title>Pogram of the new variety</title>
+	</head>
+	<body>
+		<form>
+			<label for="textjel"></label>
+			<input type="text"
+			       id="textjel"
+			       name="textjel"
+			       placeholder="pogramy">
+			<input type="submit" value="Submit">
+		</form>
+		<script>
+			const electron = require('electron');
+			const ipcRenderer = electron.ipcRenderer;
 
-</body>
+			const form = document.querySelector('form');
+			const input = document.querySelector('#textjel');
+
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				ipcRenderer.send('new-program', input.value);
+				input.value = '';
+			});
+		</script>
+	</body>
 </html>

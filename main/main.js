@@ -1,9 +1,9 @@
-const {
-	app,
-	BrowserWindow,
-	Menu
-} = require('electron');
 const path = require("path");
+
+const app = require('electron').app;
+const BrowserWindow = require('electron').BrowserWindow;
+const Menu = require('electron').Menu;
+const ipcMain = require('electron').ipcMain;
 
 const webPath = './web';
 const templatesPath = path.join(webPath, 'templates');
@@ -64,7 +64,8 @@ function createNewWindow() {
 		height: 400,
 		webPreferences: {
 			// preload: path.join(__dirname, 'preload.js'),
-			nodeIntegration: true
+			nodeIntegration: true,
+			contextIsolation: false
 		}
 	})
 
@@ -80,7 +81,8 @@ app.whenReady().then(() => {
 		height: 800,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
-			nodeIntegration: true
+			nodeIntegration: true,
+			contextIsolation: false
 		}
 	})
 
@@ -94,3 +96,8 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
 	app.quit()
 })
+
+ipcMain.on('new-program', (event, arg) => {
+	console.log(arg);
+	createNewWindow();
+});
