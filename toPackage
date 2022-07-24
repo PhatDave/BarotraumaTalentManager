@@ -1,1 +1,5 @@
+npx electron-packager <sourcedir> <appname> --platform=<platform> --arch=<arch> [optional flags...]
+https://www.electron.build/configuration/publish.html
+https://www.npmjs.com/package/electron-packager
+
 npx electron-packager . --platform=win32
